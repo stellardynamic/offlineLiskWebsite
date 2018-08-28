@@ -1,6 +1,6 @@
 var receiver, amount;
 var qrcode = "";
-	
+
 $( function() {
 	$( "#tabs" ).tabs();
 	$( ".widget input[type=submit], .widget a, .widget button" ).button();
@@ -60,8 +60,22 @@ function createLskTx(){
 	}
 	
 	amount = Number(amount);
-	var transaction = lisk.transaction.createTransaction(receiver, amount, pass, second);
-	//document.getElementById("transaction").innerHTML = JSON.stringify(transaction);
+	var transaction;
+	if (!second){
+	transaction = lisk.transaction.transfer({
+		amount: amount,
+		recipientId: receiver,
+		data: 'created with lisksnake offline tools',
+		passphrase: pass});
+	console.log("no sec");
+	} else {
+	transaction = lisk.transaction.transfer({
+		amount: amount,
+		recipientId: receiver,
+		data: 'created with lisksnake offline tools',
+		passphrase: pass,
+		secondPassphrase: second});
+	}
 	document.getElementById("transaction-1").innerHTML = JSON.stringify(transaction);
 	
 	function makeCode () {		
@@ -88,7 +102,9 @@ function createSecPassTx(){
 	pass = pass.trim();
 	var second = document.getElementById('pass02-2').value;
 	second = second.trim();
-	var transaction = lisk.signature.createSignature(pass, second);
+	var transaction = lisk.transaction.registerSecondPassphrase({
+		secondPassphrase: second,
+		passphrase: pass});
 	document.getElementById("transaction-2").innerHTML = JSON.stringify(transaction);
 
 	function makeCode () {
@@ -120,9 +136,23 @@ function createVotingTx(){
 	pass = pass.trim();
 	var second = document.getElementById('pass02-3').value;
 	second = second.trim();
-	var deleg = document.getElementById('deleg').value;
-	deleg = deleg.trim();
-	var transaction = lisk.vote.createVote(pass, deleg.split(",") , second);
+	var deleg_vote = document.getElementById('deleg-vote').value;
+	deleg_vote = deleg_vote.trim();
+	var deleg_unvote = document.getElementById('deleg-unvote').value;
+	deleg_unvote = deleg_unvote.trim();	
+	
+	if (!second){
+	var transaction = lisk.transaction.castVotes({
+		votes: deleg_vote.split(","),
+		unvotes: deleg_unvote.split(","),
+		passphrase: pass});	
+	} else {	
+	var transaction = lisk.transaction.castVotes({
+		votes: deleg_vote.split(","),
+		unvotes: deleg_unvote.split(","),
+		passphrase: pass,
+		secondPassphrase: second});
+	}
 	console.log(transaction);
 	document.getElementById("transaction-3").innerHTML = JSON.stringify(transaction);
 	
@@ -157,7 +187,24 @@ function createDelegateTx(){
 		alert("Name is too long! Max.: 20 characters!");
 		return;
 	}
-	var transaction = lisk.delegate.createDelegate(pass, degName, second);
+	
+	//Max 20 characters a-z 0-1, no special characters except “!@$&_.”
+	var re = new RegExp("^[a-zA-Z0-9!@$&_.]*$");
+	if (!re.test(degName)) {
+		alert("Name contained invalid characters!");
+		return;	
+	}
+	if (!second){	
+	var transaction = lisk.transaction.registerDelegate({
+		username: degName,
+		passphrase: pass});
+	} else {		
+	var transaction = lisk.transaction.registerDelegate({
+		username: degName,
+		passphrase: pass,
+		secondPassphrase: second});
+	}
+		
 	document.getElementById("transaction-4").innerHTML = JSON.stringify(transaction);
 
 	function makeCode () {		
@@ -173,6 +220,44 @@ function createDelegateTx(){
 	makeCode();
 }
 
+function signMessage(){
+	qrcode = new QRCode(document.getElementById("qrcode-61"), {
+		width : 500,
+		height : 500
+	});
+	
+	var pass = document.getElementById('pass01-6').value;
+	pass = pass.trim();
+	var msgInput = document.getElementById('message01-6').value;
+	msgInput = msgInput.trim();
+	
+	var keys = lisk.cryptography.getPrivateAndPublicKeyFromPassphrase(pass);
+	var pubKey = keys['publicKey'];
+	var signedData = lisk.cryptography.signMessageWithPassphrase(
+											msgInput,
+											pass);
+	var signedAsString = lisk.cryptography.printSignedMessage(signedData)
+	
+	//lisk.crypto.signAndPrintMessage(msgInput,pass);
+	
+	console.log(signedData);
+	
+	document.getElementById("signedMessage-1").innerHTML = JSON.stringify(signedAsString);
+	
+	function makeCode () {		
+		var elText = JSON.stringify(signedAsString);
+		
+		if (!elText) {
+			alert("String was empty");
+			elText.focus();
+			return;
+		}
+		qrcode.makeCode(elText);
+	}
+	makeCode();
+}
+	
+	
 function clearAll1(){
 	//document.getElementById("chkPass1").checked = false;
 	//document.getElementById("chkPass2").checked = false;		
@@ -244,6 +329,10 @@ function togglePassword(num, checked){
 			//var chkPass = document.getElementById("chkPass2");
 			var strPass = document.getElementById("pass02-4");
 			break;
+		case "chk01-6":
+			//var chkPass = document.getElementById("chkPass2");
+			var strPass = document.getElementById("pass01-6");
+			break;
 		default:
 			return;
 	}
@@ -271,10 +360,13 @@ function getNewAccount(){
 	var newPassphrase = '';
 	newPassphrase=getRandomPassphrase();
 	
-	var keys = lisk.crypto.getKeys(newPassphrase);
+	//var keys = lisk.crypto.getKeys(newPassphrase);
+	var keys = lisk.cryptography.getPrivateAndPublicKeyFromPassphrase(newPassphrase);
+	
 	var pubKey = keys['publicKey'];
 	var privKey = keys['privateKey'];
-	var accountAddress = lisk.crypto.getAddress(pubKey);
+	//var accountAddress = lisk.crypto.getAddress(pubKey);
+	var accountAddress = lisk.cryptography.getAddressFromPassphrase(newPassphrase);
 	
 	document.getElementById("passp").value = newPassphrase;
 	document.getElementById("pubkey").value = pubKey;
@@ -348,7 +440,7 @@ function getRandomPassphrase(){
 	//randomWords[5]=addZerosToHex(Math.floor(Math.random()*65535).toString(16));
 	
 	lPassphrase128=randomWords[1]+randomWords[2]+randomWords[3]+randomWords[4]+randomWords[5]+randomWords[6]+randomWords[7]+randomWords[8];
-	var sha256Hash = lisk.crypto.getSha256Hash(lPassphrase128,"hex");
+	var sha256Hash = lisk.cryptography.hash(lPassphrase128,"hex");
 	lPassphrase128=hexToBin(lPassphrase128);
 	checksum=addZerosToBin(sha256Hash[0]).toString(2).slice(0,4);
 	lPassphrase132=lPassphrase128+checksum;
@@ -432,9 +524,5 @@ function getRandomPassphrase(){
 			}
 		}
 		return strBinNumber;
-	}
-	
-	function getCryptoRandom(){
-	
 	}
 }		

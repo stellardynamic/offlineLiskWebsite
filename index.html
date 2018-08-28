@@ -10,12 +10,13 @@
   <script type="text/javascript" src="external/jquery/jquery.js"></script>
   <script src="jquery-ui.js"></script>
   <script type="text/javascript" src="qrcode.js"></script>
-  <script src="words.json"></script>
-  <script src="lisk-js.js"></script>  
+  <script src="words.json"></script>  
+  <script src="lisk-elements-1.0.0.js"></script>  
+
 </head>
 <body background="background.jpg">
 
-<h1 style="text-align:center">LISK Offline Tools V1.0.0</h1>
+<h1 style="text-align:center">LISK Offline Tools V2.0.0 (Core 1.x compatible)</h1>
 <h2 style="text-align:center">by lisksnake</h2>
 
 <!-- Tabs -->
@@ -26,8 +27,9 @@
 		<li><a href="#tabs-3">Voting</a></li>
 		<li><a href="#tabs-4">Delegate registration</a></li>
 		<li><a href="#tabs-5">Create random passphrase</a></li>
-		<li><a href="#tabs-6">How to send transactions</a></li>
-		<li><a href="#tabs-7">Github / Download</a></li>
+		<li><a href="#tabs-6">Sign message with passphrase</a></li>
+		<li><a href="#tabs-7">How to send transactions</a></li>
+		<li><a href="#tabs-8">Github / Download</a></li>
 	</ul>
 	<div id="tabs-1">
 		  <blinks><h2>DON'T USE THIS SITE ONLINE. DOWNLOAD IT TO YOUR OFFLINE DEVICE AND USE IT THERE!</h2></blinks>
@@ -227,12 +229,22 @@
 			<td style="width: 80%">
 			  	<br />
 				<br />	
-				<input type="text" name="deleg" id="deleg" placeholder="Array of delagate PUBLIC KEYS" required style="width: 100%"/><br />
-				<p>Example: +473c354cdf627b82e9113e02a337486dd3afc5615eb71ffd311c5a0beda37b8c,+eaa049295d96618c51eb30deffe7fc2cc8bfc13190cb97f3b513dd060b000a46</p>
+				<input type="text" name="deleg-vote" id="deleg-vote" placeholder="Array of delagate votes (PUBLIC KEYS)" required style="width: 100%"/><br />
+				<p>Example: 473c354cdf627b82e9113e02a337486dd3afc5615eb71ffd311c5a0beda37b8c,eaa049295d96618c51eb30deffe7fc2cc8bfc13190cb97f3b513dd060b000a46</p>
 			</td>
 			<td>
 			</td>
 			</tr>
+			<tr>
+			<td style="width: 80%">
+			  	<br />
+				<br />	
+				<input type="text" name="deleg-unvote" id="deleg-unvote" placeholder="Array of delagate unvotes (PUBLIC KEYS)" required style="width: 100%"/><br />
+				<p>Example: 473c354cdf627b82e9113e02a337486dd3afc5615eb71ffd311c5a0beda37b8c,eaa049295d96618c51eb30deffe7fc2cc8bfc13190cb97f3b513dd060b000a46</p>
+			</td>
+			<td>
+			</td>
+			</tr>			
 			<tr>
 			<td style="width: 80%">
 			</td>
@@ -474,6 +486,84 @@
 		</table>
 	</div>
 	<div id="tabs-6">
+		  <blinks><h2>DON'T USE THIS SITE ONLINE. DOWNLOAD IT TO YOUR OFFLINE DEVICE AND USE IT THERE!</h2></blinks>
+		  <table style="width: 100%">
+			<tr>
+			  <td style="width: 80%">
+			  	<input type="password" name="pass01-6" id="pass01-6" placeholder="Your passphrase" style="width: 100%"/></td>
+			  <td>
+			  	<div class="controlgroup">
+			  		<label for="chk01-6">Show / Hide Passphrase</label>
+			  		<input type="checkbox" name="chk01-6" id="chk01-6"></input>
+			  	</div>
+			  </td>
+			</tr>
+			<tr>
+			  <td style="width: 80%">
+			  	<br />
+				<br />
+			  	<input type="text" name="message01-6" id="message01-6" placeholder="Your message" style="width: 100%"/>
+			  </td>
+			  <td>
+			  	<br />
+				<br />				  
+			  </td>
+			</tr>
+			<tr>
+				<td>
+					<br/>
+					<br/>
+					<table style="width: 100%">
+						<tr>
+						  <td style="width: 40%">
+							<div class="widget">
+							  <button onclick="signMessage()">Sign message</button>
+							</div>
+						  </td>
+						  <td>&nbsp;</td>
+						  <td style="width: 40%">  
+						  </td>
+						</tr>
+					</table>
+				</td>
+				<td>
+				<br/>
+				<br/>
+				</td>
+			</tr>	
+			<tr>
+				<td>
+				<br/>
+				<br/>
+					<label id="transLabel"><strong>Signed message data: </strong></label>
+					<div id="signedMessage-1" style="word-break: break-all; word-wrap: break-word;">
+					</div>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td>
+				<br/>
+				<br/>
+				</td>
+				<td>
+				</td>
+			</tr>
+		</table>
+		<br/>
+		<br/>
+		<table style="width: 100%">
+			<tr>
+				<td style="width: 20%">&nbsp;</td>
+				<td>
+					<label id="transLabel"><strong>Data with signed message: </strong></label>
+					<div id="qrcode-61" style="width:500px; height:500px; margin-top:15px;"></div>
+				</td>
+				<td style="width: 20%">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+	<div id="tabs-7">
 		<p style="font-size:x-large">There are currently 2 tools available for 
 		scanning the QR-Codes and broadcast the transaction to the Lisk network:</p>
 		<ul>
@@ -484,7 +574,7 @@
 		</ul>
 	
 	</div>
-	<div id="tabs-7">
+	<div id="tabs-8">
 		Download this website from Github:<br />
 		<br />
 		<a target="_blank" href="https://github.com/lisksnake/offlineLiskWebsite">
