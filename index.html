@@ -28,8 +28,9 @@
 		<li><a href="#tabs-4">Delegate registration</a></li>
 		<li><a href="#tabs-5">Create random passphrase</a></li>
 		<li><a href="#tabs-6">Sign message with passphrase</a></li>
-		<li><a href="#tabs-7">How to send transactions</a></li>
-		<li><a href="#tabs-8">Github / Download</a></li>
+		<li><a href="#tabs-7">Check passphrase -> address</a></li>
+		<li><a href="#tabs-8">How to send transactions</a></li>
+		<li><a href="#tabs-9">Github / Download</a></li>
 	</ul>
 	<div id="tabs-1">
 		  <blinks><h2>DON'T USE THIS SITE ONLINE. DOWNLOAD IT TO YOUR OFFLINE DEVICE AND USE IT THERE!</h2></blinks>
@@ -564,6 +565,58 @@
 		</table>
 	</div>
 	<div id="tabs-7">
+		  <blinks><h2>DON'T USE THIS SITE ONLINE. DOWNLOAD IT TO YOUR OFFLINE DEVICE AND USE IT THERE!</h2></blinks>
+		  <table style="width: 100%">
+			<tr>
+			  <td style="width: 80%">
+			  	<input type="password" name="pass1" id="pass01-7" placeholder="Your passphrase" style="width: 100%"/></td>
+			  <td>
+			  	<div class="controlgroup">
+			  		<label for="chk01-7">Show / Hide Passphrase</label>
+			  		<input type="checkbox" name="chk01" id="chk01-7"></input>
+			  	</div>
+			  </td>
+			</tr>
+			<tr>
+				<td>
+				<br/>
+				<br/>
+					<table style="width: 100%">
+						<tr>
+						  <td style="width: 20%">
+							<div class="widget">
+							  <button onclick="createAddress()">Generate address</button>
+							</div>
+						  </td>
+						  <td>&nbsp;</td>
+						  <td style="width: 20%">
+							<div class="widget">
+							  <button onclick="clearAll7()">-------- Clear all --------</button>
+							</div>	  
+						  </td>
+						</tr>
+					</table>
+				</td>
+				<td>
+				<br/>
+				<br/>
+				</td>
+			</tr>			
+			<tr>
+				<td>
+				<br/>
+				<br/>
+					<label id="addressLabel"><strong>Address: </strong></label>
+					<div id="address-7" style="word-break: break-all; word-wrap: break-word;">
+					</div>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		<br/>
+		<br/>
+	</div>
+	<div id="tabs-8">
 		<p style="font-size:x-large">There are currently 2 tools available for 
 		scanning the QR-Codes and broadcast the transaction to the Lisk network:</p>
 		<ul>
@@ -574,7 +627,7 @@
 		</ul>
 	
 	</div>
-	<div id="tabs-8">
+	<div id="tabs-9">
 		Download this website from Github:<br />
 		<br />
 		<a target="_blank" href="https://github.com/lisksnake/offlineLiskWebsite">
@@ -586,7 +639,7 @@
 		<br />
 		<a href="offlineLiskWebsite.zip">
 		offlineLiskWebsite.zip</a>
-		<p>SHA-1:  f725dc060259c7a022ffc1b2dc7c4f0e8c44f74c</p>
+		<p>SHA-1:  1a1c5de123fd6fa449a7c099e762068c2bf7e053</p>
 	</div>
 
 </div>

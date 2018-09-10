@@ -120,6 +120,16 @@ function createSecPassTx(){
 	makeCode();
 }
 
+function createAddress(){
+
+	var pass = document.getElementById('pass01-7').value;
+	pass = pass.trim();
+
+	var address = lisk.cryptography.getAddressAndPublicKeyFromPassphrase( pass );
+	document.getElementById("address-7").innerHTML = JSON.stringify(address.address);
+
+}
+
 function createVotingTx(){
 	document.getElementById("transaction-3").innerHTML = "";
 	document.getElementById("qrcode-3").innerHTML=""
@@ -332,6 +342,10 @@ function togglePassword(num, checked){
 		case "chk01-6":
 			//var chkPass = document.getElementById("chkPass2");
 			var strPass = document.getElementById("pass01-6");
+			break;
+		case "chk01-7":
+			//var chkPass = document.getElementById("chkPass2");
+			var strPass = document.getElementById("pass01-7");
 			break;
 		default:
 			return;
