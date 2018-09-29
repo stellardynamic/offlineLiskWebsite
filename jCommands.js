@@ -152,16 +152,38 @@ function createVotingTx(){
 	deleg_unvote = deleg_unvote.trim();	
 	
 	if (!second){
-	var transaction = lisk.transaction.castVotes({
-		votes: deleg_vote.split(","),
-		unvotes: deleg_unvote.split(","),
-		passphrase: pass});	
+		if (deleg_vote && deleg_unvote){
+			var transaction = lisk.transaction.castVotes({
+			votes: deleg_vote.split(","),
+			unvotes: deleg_unvote.split(","),
+			passphrase: pass});	
+		} else if (deleg_vote && !deleg_unvote){
+			var transaction = lisk.transaction.castVotes({
+			votes: deleg_vote.split(","),
+			passphrase: pass});	
+		} else if (!deleg_vote && deleg_unvote){
+			var transaction = lisk.transaction.castVotes({
+			unvotes: deleg_unvote.split(","),
+			passphrase: pass});	
+		}
 	} else {	
-	var transaction = lisk.transaction.castVotes({
-		votes: deleg_vote.split(","),
-		unvotes: deleg_unvote.split(","),
-		passphrase: pass,
-		secondPassphrase: second});
+		if (deleg_vote && deleg_unvote){
+			var transaction = lisk.transaction.castVotes({
+			votes: deleg_vote.split(","),
+			unvotes: deleg_unvote.split(","),
+			passphrase: pass,
+			secondPassphrase: second});
+		} else if (deleg_vote && !deleg_unvote){
+			var transaction = lisk.transaction.castVotes({
+			votes: deleg_vote.split(","),
+			passphrase: pass,
+			secondPassphrase: second});
+		} else if (!deleg_vote && deleg_unvote){
+			var transaction = lisk.transaction.castVotes({
+			unvotes: deleg_unvote.split(","),
+			passphrase: pass,
+			secondPassphrase: second});
+		}
 	}
 	console.log(transaction);
 	document.getElementById("transaction-3").innerHTML = JSON.stringify(transaction);
