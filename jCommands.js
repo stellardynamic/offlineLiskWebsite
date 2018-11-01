@@ -132,11 +132,18 @@ function createAddress(){
 
 function createVotingTx(){
 	document.getElementById("transaction-3").innerHTML = "";
-	document.getElementById("qrcode-3").innerHTML=""
+	document.getElementById("qrcode-31").innerHTML=""
+	document.getElementById("qrcode-32").innerHTML=""
 	var strQR ='';
 	var strQR1 ='';
 	var strQR2 ='';
-	qrcode = new QRCode(document.getElementById("qrcode-3"), {
+	qrcode1 = new QRCode(document.getElementById("qrcode-31"), {
+		width : 600,
+		height : 600,
+		correctLevel : QRCode.CorrectLevel.L
+	});
+	
+	qrcode2 = new QRCode(document.getElementById("qrcode-32"), {
 		width : 600,
 		height : 600,
 		correctLevel : QRCode.CorrectLevel.L
@@ -188,17 +195,30 @@ function createVotingTx(){
 	console.log(transaction);
 	document.getElementById("transaction-3").innerHTML = JSON.stringify(transaction);
 	
-	function makeCode () {		
-		var elText = JSON.stringify(transaction);
-		
-		if (!elText) {
-			alert("Transaction was empty");
-			elText.focus();
-			return;
+		function makeCode (elText, nbr) {
+			if (!elText) {
+				alert("Transaction was empty");
+				elText.focus();
+				return;
+			}
+			if (nbr == 1){
+				qrcode1.makeCode(elText);
+			}else if (nbr == 2){
+				qrcode2.makeCode(elText);
+			}else{
+				return;
+			}
 		}
-		qrcode.makeCode(elText);
-	}
-	makeCode();
+		
+		strQR = JSON.stringify(transaction);
+		if (strQR.length>1340){
+			strQR1 = strQR.substring(0,1340);
+			strQR2 = strQR.substring(1340,strQR.length);
+			makeCode(strQR1,1);
+			makeCode(strQR2,2);
+		} else {
+			makeCode(strQR,1);
+		}
 }
 
 function createDelegateTx(){
