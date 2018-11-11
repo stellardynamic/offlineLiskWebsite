@@ -40,6 +40,7 @@ function createLskTx(){
 	var amnt = document.getElementById('amount').value;
 	receiver = document.getElementById('rec').value;
 	receiver = receiver.trim();
+	customData = document.getElementById('customData').value
 	
 	if (isNaN(Number(amnt)))
 		amnt = amnt.replace(',','.');
@@ -65,14 +66,14 @@ function createLskTx(){
 	transaction = lisk.transaction.transfer({
 		amount: amount,
 		recipientId: receiver,
-		data: 'created with lisksnake offline tools',
+		data: customerData,
 		passphrase: pass});
 	console.log("no sec");
 	} else {
 	transaction = lisk.transaction.transfer({
 		amount: amount,
 		recipientId: receiver,
-		data: 'created with lisksnake offline tools',
+		data: customData,
 		passphrase: pass,
 		secondPassphrase: second});
 	}
